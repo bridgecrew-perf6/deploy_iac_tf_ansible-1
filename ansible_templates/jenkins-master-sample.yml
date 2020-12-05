@@ -1,0 +1,16 @@
+---
+- hosts: "{{ passed_in_hosts }}"
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and Enable Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+

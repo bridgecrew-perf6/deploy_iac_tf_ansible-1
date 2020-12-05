@@ -1,0 +1,745 @@
+{
+  "version": 4,
+  "terraform_version": "0.12.29",
+  "serial": 4,
+  "lineage": "16fce43c-3731-9ec9-9aa2-788b112fd58b",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "data",
+      "type": "aws_availability_zones",
+      "name": "azs",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "all_availability_zones": null,
+            "exclude_names": null,
+            "exclude_zone_ids": null,
+            "filter": null,
+            "group_names": [
+              "us-west-1"
+            ],
+            "id": "us-west-1",
+            "names": [
+              "us-west-1a",
+              "us-west-1c"
+            ],
+            "state": "available",
+            "zone_ids": [
+              "usw1-az1",
+              "usw1-az3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_ssm_parameter",
+      "name": "linuxAmi",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ssm:us-west-1:325620063179:parameter/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "id": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "name": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "type": "String",
+            "value": "ami-08d9a394ac1c2994c",
+            "version": 38,
+            "with_decryption": true
+          }
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_ssm_parameter",
+      "name": "linuxAmiOregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ssm:us-west-2:325620063179:parameter/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "id": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "name": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+            "type": "String",
+            "value": "ami-0e472933a1395e172",
+            "version": 36,
+            "with_decryption": true
+          }
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:internet-gateway/igw-030bb1db9450e4c35",
+            "id": "igw-030bb1db9450e4c35",
+            "owner_id": "325620063179",
+            "tags": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_vpc.vpc_master"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw-oregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-2:325620063179:internet-gateway/igw-03923af33d141b4eb",
+            "id": "igw-03923af33d141b4eb",
+            "owner_id": "325620063179",
+            "tags": null,
+            "vpc_id": "vpc-0e5479e7b30fa564c"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_vpc.vpc_master_oregon"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_main_route_table_association",
+      "name": "set-master-default-rt-assoc",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "rtbassoc-040bf7e41595cb768",
+            "original_route_table_id": "rtb-0d55061d825f30968",
+            "route_table_id": "rtb-061688a8a1c0b1cb3",
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_route_table.internet_route",
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon",
+            "aws_vpc_peering_connection.uswest1-uswest2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_main_route_table_association",
+      "name": "set-worker-default-rt-assoc",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "rtbassoc-0ecd0f73481e083d2",
+            "original_route_table_id": "rtb-0d93dfa56c8403867",
+            "route_table_id": "rtb-0d657461900003099",
+            "vpc_id": "vpc-0e5479e7b30fa564c"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_internet_gateway.igw-oregon",
+            "aws_route_table.internet_route_oregon",
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon",
+            "aws_vpc_peering_connection.uswest1-uswest2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "internet_route",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "rtb-061688a8a1c0b1cb3",
+            "owner_id": "325620063179",
+            "propagating_vgws": [],
+            "route": [
+              {
+                "cidr_block": "0.0.0.0/0",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-030bb1db9450e4c35",
+                "instance_id": "",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              },
+              {
+                "cidr_block": "192.168.1.0/24",
+                "egress_only_gateway_id": "",
+                "gateway_id": "",
+                "instance_id": "",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": "pcx-0e4f715903e6f78ed"
+              }
+            ],
+            "tags": {
+              "Name": "Master-Region-RT"
+            },
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon",
+            "aws_vpc_peering_connection.uswest1-uswest2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "internet_route_oregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "rtb-0d657461900003099",
+            "owner_id": "325620063179",
+            "propagating_vgws": [],
+            "route": [
+              {
+                "cidr_block": "0.0.0.0/0",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-03923af33d141b4eb",
+                "instance_id": "",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              },
+              {
+                "cidr_block": "10.0.1.0/24",
+                "egress_only_gateway_id": "",
+                "gateway_id": "",
+                "instance_id": "",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": "pcx-0e4f715903e6f78ed"
+              }
+            ],
+            "tags": {
+              "Name": "Worker-Region-RT"
+            },
+            "vpc_id": "vpc-0e5479e7b30fa564c"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_internet_gateway.igw-oregon",
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon",
+            "aws_vpc_peering_connection.uswest1-uswest2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "jenkins-sg",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:security-group/sg-05199ac6b443f39c3",
+            "description": "Allow TCP/8080 \u0026 TCP/22",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-05199ac6b443f39c3",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow 22 from our public IP",
+                "from_port": 22,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 22
+              },
+              {
+                "cidr_blocks": [
+                  "192.168.1.0/24"
+                ],
+                "description": "allow traffic from us-west-2",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              },
+              {
+                "cidr_blocks": [],
+                "description": "allow anyone on port 8080",
+                "from_port": 8080,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [
+                  "sg-07ed28d978406a2e2"
+                ],
+                "self": false,
+                "to_port": 8080
+              }
+            ],
+            "name": "jenkins-sg",
+            "name_prefix": "",
+            "owner_id": "325620063179",
+            "revoke_rules_on_delete": false,
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_security_group.lb-sg",
+            "aws_vpc.vpc_master"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "jenkins-sg-oregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-2:325620063179:security-group/sg-0b1d3fe58930dd7f5",
+            "description": "Allow TCP/8080 \u0026 TCP/22",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0b1d3fe58930dd7f5",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow 22 from our public IP",
+                "from_port": 22,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 22
+              },
+              {
+                "cidr_blocks": [
+                  "10.0.1.0/24"
+                ],
+                "description": "Allow traffic from us-west-1",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "name": "jenkins-sg-oregon",
+            "name_prefix": "",
+            "owner_id": "325620063179",
+            "revoke_rules_on_delete": false,
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-0e5479e7b30fa564c"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.vpc_master_oregon"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "lb-sg",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:security-group/sg-07ed28d978406a2e2",
+            "description": "Allow 443 and traffic to Jenkins SG",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-07ed28d978406a2e2",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow 443 from anywhere",
+                "from_port": 443,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 443
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow 80 from anywhere for redirection",
+                "from_port": 80,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 80
+              }
+            ],
+            "name": "lb-sg",
+            "name_prefix": "",
+            "owner_id": "325620063179",
+            "revoke_rules_on_delete": false,
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.vpc_master"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "subnet_1",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:subnet/subnet-063ae6e74700700b7",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-west-1a",
+            "availability_zone_id": "usw1-az1",
+            "cidr_block": "10.0.1.0/24",
+            "id": "subnet-063ae6e74700700b7",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "325620063179",
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.vpc_master"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "subnet_1_oregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-2:325620063179:subnet/subnet-0721bccfee58da160",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-west-2a",
+            "availability_zone_id": "usw2-az2",
+            "cidr_block": "192.168.1.0/24",
+            "id": "subnet-0721bccfee58da160",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "325620063179",
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-0e5479e7b30fa564c"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.vpc_master_oregon"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "subnet_2",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:subnet/subnet-075e656a07cfe99e2",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-west-1c",
+            "availability_zone_id": "usw1-az3",
+            "cidr_block": "10.0.2.0/24",
+            "id": "subnet-075e656a07cfe99e2",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "325620063179",
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.vpc_master"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "vpc_master",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-1:325620063179:vpc/vpc-030f5ebf02252eb61",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "10.0.0.0/16",
+            "default_network_acl_id": "acl-0b3f810789409ec03",
+            "default_route_table_id": "rtb-0d55061d825f30968",
+            "default_security_group_id": "sg-0e5be03cf30219be7",
+            "dhcp_options_id": "dopt-0008bfbab9c04b2d2",
+            "enable_classiclink": false,
+            "enable_classiclink_dns_support": false,
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "id": "vpc-030f5ebf02252eb61",
+            "instance_tenancy": "default",
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "main_route_table_id": "rtb-0d55061d825f30968",
+            "owner_id": "325620063179",
+            "tags": {
+              "Name": "master-vpc-jenkins"
+            }
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "vpc_master_oregon",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-west-2:325620063179:vpc/vpc-0e5479e7b30fa564c",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "192.168.0.0/16",
+            "default_network_acl_id": "acl-0a5b87f770e4f97b2",
+            "default_route_table_id": "rtb-0d93dfa56c8403867",
+            "default_security_group_id": "sg-0902d22a144471f83",
+            "dhcp_options_id": "dopt-ed197e95",
+            "enable_classiclink": false,
+            "enable_classiclink_dns_support": false,
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "id": "vpc-0e5479e7b30fa564c",
+            "instance_tenancy": "default",
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "main_route_table_id": "rtb-0d93dfa56c8403867",
+            "owner_id": "325620063179",
+            "tags": {
+              "Name": "worker-vpc-jenkins"
+            }
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_peering_connection",
+      "name": "uswest1-uswest2",
+      "provider": "provider.aws.region-master",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accept_status": "pending-acceptance",
+            "accepter": [],
+            "auto_accept": null,
+            "id": "pcx-0e4f715903e6f78ed",
+            "peer_owner_id": "325620063179",
+            "peer_region": "us-west-2",
+            "peer_vpc_id": "vpc-0e5479e7b30fa564c",
+            "requester": [
+              {
+                "allow_classic_link_to_remote_vpc": false,
+                "allow_remote_vpc_dns_resolution": false,
+                "allow_vpc_to_remote_classic_link": false
+              }
+            ],
+            "tags": null,
+            "timeouts": null,
+            "vpc_id": "vpc-030f5ebf02252eb61"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMCwiZGVsZXRlIjo2MDAwMDAwMDAwMCwidXBkYXRlIjo2MDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_peering_connection_accepter",
+      "name": "accept_peering",
+      "provider": "provider.aws.region-worker",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accept_status": "active",
+            "accepter": [
+              {
+                "allow_classic_link_to_remote_vpc": false,
+                "allow_remote_vpc_dns_resolution": false,
+                "allow_vpc_to_remote_classic_link": false
+              }
+            ],
+            "auto_accept": true,
+            "id": "pcx-0e4f715903e6f78ed",
+            "peer_owner_id": "325620063179",
+            "peer_region": "us-west-2",
+            "peer_vpc_id": "vpc-0e5479e7b30fa564c",
+            "requester": [
+              {
+                "allow_classic_link_to_remote_vpc": false,
+                "allow_remote_vpc_dns_resolution": false,
+                "allow_vpc_to_remote_classic_link": false
+              }
+            ],
+            "tags": null,
+            "vpc_id": "vpc-030f5ebf02252eb61",
+            "vpc_peering_connection_id": "pcx-0e4f715903e6f78ed"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_vpc.vpc_master",
+            "aws_vpc.vpc_master_oregon",
+            "aws_vpc_peering_connection.uswest1-uswest2"
+          ]
+        }
+      ]
+    }
+  ]
+}
